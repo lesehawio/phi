@@ -272,16 +272,62 @@
   }
 
   // 🗂️ اپ‌ها
+  // package = نام بسته‌ی اندروید برای اجرای مستقیم اپ نصب‌شده
   const apps = {
-    chrome:    { name: 'Chrome',    icon: '🌐', color: '#4285F4', url: 'https://www.google.com' },
-    messages:  { name: 'Messages',  icon: '💬', color: '#00C853', url: 'sms:' },
-    phone:     { name: 'Phone',     icon: '📞', color: '#00BFA5', url: 'tel:' },
-    eitaa:     { name: 'Eitaa',     icon: '🟢', color: '#4CAF50', url: 'https://eitaa.com' },
-    youtube:   { name: 'YouTube',   icon: '▶️', color: '#FF0000', url: 'https://www.youtube.com' },
-    instagram: { name: 'Instagram', icon: '📷', color: '#E1306C', url: 'https://www.instagram.com' },
-    pinterest: { name: 'Pinterest', icon: '📌', color: '#E60023', url: 'https://www.pinterest.com' },
-    camera:    { name: 'Camera',    icon: '📸', color: '#FF9800', url: 'camera:' },
-    gallery:   { name: 'Gallery',   icon: '🖼️', color: '#9C27B0', url: null }
+    chrome: {
+      name: 'Chrome', icon: '🌐', color: '#4285F4',
+      package: 'com.android.chrome',
+      fallback: 'https://www.google.com'
+    },
+
+    messages: {
+      name: 'Messages', icon: '💬', color: '#00C853',
+      scheme: 'sms:',
+      fallback: 'sms:'
+    },
+
+    phone: {
+      name: 'Phone', icon: '📞', color: '#00BFA5',
+      scheme: 'tel:',
+      fallback: 'tel:'
+    },
+
+    eitaa: {
+      name: 'Eitaa', icon: '🟢', color: '#4CAF50',
+      package: 'ir.eitaa.messenger',
+      fallback: 'https://eitaa.com'
+    },
+
+    youtube: {
+      name: 'YouTube', icon: '▶️', color: '#FF0000',
+      package: 'com.google.android.youtube',
+      fallback: 'https://www.youtube.com'
+    },
+
+    instagram: {
+      name: 'Instagram', icon: '📷', color: '#E1306C',
+      package: 'com.instagram.android',
+      fallback: 'https://www.instagram.com'
+    },
+
+    pinterest: {
+      name: 'Pinterest', icon: '📌', color: '#E60023',
+      package: 'com.pinterest',
+      fallback: 'https://www.pinterest.com'
+    },
+
+    camera: {
+      name: 'Camera', icon: '📸', color: '#FF9800',
+      action: 'android.media.action.IMAGE_CAPTURE',
+      fallback: 'camera:'
+    },
+
+    gallery: {
+      name: 'Gallery', icon: '🖼️', color: '#9C27B0',
+      action: 'android.intent.action.PICK',
+      type: 'image/*',
+      fallback: 'content://media/external/images/media'
+    }
   };
 
   const keywords = {
@@ -318,6 +364,61 @@
     return null;
   }
 
+  // 🧭 ساخت Android Intent URI
+  function buildIntent(app) {
+    let intent = 'intent://#Intent;';
+
+    if (app.action) {
+      intent += `action=${app.action};`;
+    } else {
+      intent += 'action=android.intent.action.MAIN;';
+      intent += 'category=android.intent.category.LAUNCHER;';
+    }
+
+    if (app.package) {
+      intent += `package=${app.package};`;
+    }
+
+    if (app.type) {
+      intent += `type=${app.type};`;
+    }
+
+    intent += 'end';
+    return intent;
+  }
+
+  // 🚀 اجرای اپ واقعی اندروید
+  function launchAndroidApp(app) {
+    let leftPhi = false;
+
+    const markLeft = () => {
+      leftPhi = true;
+    };
+
+    window.addEventListener('blur', markLeft, { once: true });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) leftPhi = true;
+    }, { once: true });
+
+    try {
+      if (app.scheme) {
+        window.location.href = app.scheme;
+      } else {
+        // AppMint + Deep Linking باید این Intent را به Android تحویل دهد.
+        window.location.href = buildIntent(app);
+      }
+    } catch (error) {
+      console.error('Phi launch error:', error);
+    }
+
+    // اگر اپ نصب نباشد یا Intent توسط WebView رد شود، fallback اجرا می‌شود.
+    setTimeout(() => {
+      if (!leftPhi && app.fallback) {
+        window.location.href = app.fallback;
+      }
+    }, 1600);
+  }
+
   // 🚀 باز کردن اپ
   function openApp(key) {
     const app = apps[key];
@@ -325,19 +426,12 @@
 
     addMessage(`در حال باز کردن ${app.name}...`, 'bot');
 
+    // اجرای Intent را مستقیم انجام می‌دهیم تا WebView آن را به Android تحویل دهد.
+    launchAndroidApp(app);
+
     setTimeout(() => {
-      if (app.url === null) {
-        addMessage(`متأسفانه ${app.name} از طریق مرورگر قابل باز کردن نیست.`, 'bot');
-        return;
-      }
-      if (app.url.startsWith('http')) {
-        window.open(app.url, '_blank');
-        addMessage(`✅ ${app.name} باز شد!`, 'bot');
-      } else {
-        window.location.href = app.url;
-        addMessage(`✅ ${app.name} باز شد!`, 'bot');
-      }
-    }, 600);
+      addMessage(`✅ درخواست باز کردن ${app.name} ارسال شد.`, 'bot');
+    }, 500);
   }
 
   // ✍️ پردازش ورودی
@@ -346,7 +440,7 @@
     addMessage(text, 'user');
     const key = findApp(text);
     if (key) {
-      setTimeout(() => openApp(key), 400);
+      openApp(key);
     } else {
       addMessage('متوجه نشدم. مثلاً بگو: «یوتیوب رو باز کن».', 'bot');
     }
