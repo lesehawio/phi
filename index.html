@@ -271,82 +271,107 @@
     particlesContainer.appendChild(p);
   }
 
-  // 🗂️ اپ‌ها
-  // package = نام بسته‌ی اندروید برای اجرای مستقیم اپ نصب‌شده
+  // 🗂️ اپ‌های نصب‌شده — Phi App Launcher
+  // package باید همان Application ID / Package Name اپ اندرویدی باشد.
   const apps = {
-    chrome: {
-      name: 'Chrome', icon: '🌐', color: '#4285F4',
-      package: 'com.android.chrome',
-      fallback: 'https://www.google.com'
+    zi: {
+      name: 'Zi',
+      package: 'zi.github.io',
+      aliases: ['زی', 'zi', 'زی پلاس'] ,
+      fallback: 'https://lesehawio.github.io/zi/'
     },
-
-    messages: {
-      name: 'Messages', icon: '💬', color: '#00C853',
-      scheme: 'sms:',
-      fallback: 'sms:'
+    shifo: {
+      name: 'Shifo',
+      package: 'shifo.github.io',
+      aliases: ['شیفو', 'shifo'],
+      fallback: 'https://lesehawio.github.io/shifo/'
     },
-
-    phone: {
-      name: 'Phone', icon: '📞', color: '#00BFA5',
-      scheme: 'tel:',
-      fallback: 'tel:'
+    quizly: {
+      name: 'Quizly',
+      package: 'quizly.github.io',
+      aliases: ['کوییزلی', 'quizly', 'کوییز لی'],
+      fallback: 'https://lesehawio.github.io/quizly/'
     },
-
-    eitaa: {
-      name: 'Eitaa', icon: '🟢', color: '#4CAF50',
-      package: 'ir.eitaa.messenger',
-      fallback: 'https://eitaa.com'
+    jib: {
+      name: 'Jib',
+      package: 'jib.github.io',
+      aliases: ['جیب', 'jib'],
+      fallback: 'https://lesehawio.github.io/jib/'
     },
-
     youtube: {
-      name: 'YouTube', icon: '▶️', color: '#FF0000',
-      package: 'com.google.android.youtube',
-      fallback: 'https://www.youtube.com'
+      name: 'YouTube', package: 'com.google.android.youtube',
+      aliases: ['یوتیوب', 'یوتوب', 'youtube'], fallback: 'https://www.youtube.com/'
     },
-
     instagram: {
-      name: 'Instagram', icon: '📷', color: '#E1306C',
-      package: 'com.instagram.android',
-      fallback: 'https://www.instagram.com'
+      name: 'Instagram', package: 'com.instagram.android',
+      aliases: ['اینستاگرام', 'اینستا', 'instagram', 'insta'], fallback: 'https://www.instagram.com/'
     },
-
+    chrome: {
+      name: 'Chrome', package: 'com.android.chrome',
+      aliases: ['کروم', 'chrome', 'گوگل کروم'], fallback: 'https://www.google.com/'
+    },
     pinterest: {
-      name: 'Pinterest', icon: '📌', color: '#E60023',
-      package: 'com.pinterest',
-      fallback: 'https://www.pinterest.com'
+      name: 'Pinterest', package: 'com.pinterest',
+      aliases: ['پینترست', 'pinterest'], fallback: 'https://www.pinterest.com/'
     },
-
+    eitaa: {
+      name: 'Eitaa', package: 'ir.eitaa.messenger',
+      aliases: ['ایتا', 'eitaa'], fallback: 'https://eitaa.com/'
+    },
+    chatgpt: {
+      name: 'ChatGPT', package: 'com.openai.chatgpt',
+      aliases: ['چت جی پی تی', 'چت‌جی‌پی‌تی', 'chatgpt', 'chat gpt'], fallback: 'https://chatgpt.com/'
+    },
+    deepseek: {
+      name: 'DeepSeek', package: 'com.deepseek.chat',
+      aliases: ['دیپ سیک', 'دیپ‌سیک', 'deepseek'], fallback: 'https://chat.deepseek.com/'
+    },
+    gemini: {
+      name: 'Gemini', package: 'com.google.android.apps.bard',
+      aliases: ['جمینای', 'جمنای', 'gemini'], fallback: 'https://gemini.google.com/'
+    },
+    translate: {
+      name: 'Google Translate', package: 'com.google.android.apps.translate',
+      aliases: ['مترجم گوگل', 'گوگل ترنسلیت', 'ترجمه گوگل', 'translate'], fallback: 'https://translate.google.com/'
+    },
+    divar: {
+      name: 'Divar', package: 'ir.divar',
+      aliases: ['دیوار', 'divar'], fallback: 'https://divar.ir/'
+    },
+    playstore: {
+      name: 'Google Play', package: 'com.android.vending',
+      aliases: ['اپ استور', 'پلی استور', 'گوگل پلی', 'play store', 'google play'], fallback: 'https://play.google.com/store'
+    },
+    contacts: {
+      name: 'Contacts', package: 'com.google.android.contacts',
+      aliases: ['مخاطبین', 'مخاطب', 'contacts', 'کانتکت'], fallback: 'content://contacts/'
+    },
+    olvid: {
+      name: 'Olvid', package: 'io.olvid.messenger',
+      aliases: ['اولوید', 'olvid'], fallback: 'https://olvid.io/'
+    },
     camera: {
-      name: 'Camera', icon: '📸', color: '#FF9800',
-      action: 'android.media.action.IMAGE_CAPTURE',
-      fallback: 'camera:'
+      name: 'Camera', action: 'android.media.action.IMAGE_CAPTURE',
+      aliases: ['دوربین', 'camera'], fallback: 'camera:'
     },
-
     gallery: {
-      name: 'Gallery', icon: '🖼️', color: '#9C27B0',
-      action: 'android.intent.action.PICK',
-      type: 'image/*',
-      fallback: 'content://media/external/images/media'
+      name: 'Gallery', action: 'android.intent.action.VIEW', type: 'image/*',
+      aliases: ['گالری', 'gallery', 'عکس‌ها', 'تصاویر'], fallback: 'content://media/external/images/media'
+    },
+    phone: {
+      name: 'Phone', scheme: 'tel:',
+      aliases: ['تلفن', 'تماس', 'شماره گیر', 'شماره‌گیر', 'phone'], fallback: 'tel:'
+    },
+    messages: {
+      name: 'Messages', scheme: 'sms:',
+      aliases: ['پیام ها', 'پیام‌ها', 'پیام رسان', 'پیام‌رسان', 'پیام', 'messages', 'sms'], fallback: 'sms:'
     }
-  };
-
-  const keywords = {
-    chrome:    ['کروم', 'chrome', 'مرورگر', 'گوگل'],
-    messages:  ['پیام‌رسان', 'پیام رسان', 'messages', 'sms', 'پیام'],
-    phone:     ['تماس', 'phone', 'تلفن', 'زنگ'],
-    eitaa:     ['ایتا', 'eitaa'],
-    youtube:   ['یوتیوب', 'youtube', 'یوتوب'],
-    instagram: ['اینستاگرام', 'instagram', 'اینستا', 'insta'],
-    pinterest: ['پینترست', 'pinterest', 'پینتر'],
-    camera:    ['دوربین', 'camera'],
-    gallery:   ['گالری', 'gallery', 'تصاویر', 'عکس‌ها']
   };
 
   const messagesBox = document.getElementById('messages');
   const inputBox = document.getElementById('inputBox');
   const micBtn = document.getElementById('micBtn');
 
-  // 📩 افزودن پیام
   function addMessage(text, sender) {
     const div = document.createElement('div');
     div.className = 'msg ' + sender;
@@ -355,83 +380,95 @@
     messagesBox.scrollTop = messagesBox.scrollHeight;
   }
 
-  // 🔍 پیدا کردن اپ
+  function normalizeFa(text) {
+    return text.toLowerCase()
+      .replace(/[يى]/g, 'ی')
+      .replace(/ك/g, 'ک')
+      .replace(/[‌]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
   function findApp(text) {
-    const lower = text.toLowerCase();
-    for (const key in keywords) {
-      if (keywords[key].some(k => lower.includes(k.toLowerCase()))) return key;
+    const lower = normalizeFa(text);
+    for (const key in apps) {
+      if (apps[key].aliases.some(alias => lower.includes(normalizeFa(alias)))) return key;
     }
     return null;
   }
 
-  // 🧭 ساخت Android Intent URI
-  function buildIntent(app) {
+  // ساخت Intent اندروید برای اجرای مستقیم APK نصب‌شده
+  function buildAndroidIntent(app) {
     let intent = 'intent://#Intent;';
 
     if (app.action) {
-      intent += `action=${app.action};`;
+      intent += 'action=' + app.action + ';';
     } else {
       intent += 'action=android.intent.action.MAIN;';
       intent += 'category=android.intent.category.LAUNCHER;';
     }
 
-    if (app.package) {
-      intent += `package=${app.package};`;
-    }
-
-    if (app.type) {
-      intent += `type=${app.type};`;
-    }
-
+    if (app.package) intent += 'package=' + app.package + ';';
+    if (app.type) intent += 'type=' + encodeURIComponent(app.type) + ';';
     intent += 'end';
     return intent;
   }
 
-  // 🚀 اجرای اپ واقعی اندروید
-  function launchAndroidApp(app) {
-    let leftPhi = false;
-
-    const markLeft = () => {
-      leftPhi = true;
-    };
-
-    window.addEventListener('blur', markLeft, { once: true });
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) leftPhi = true;
-    }, { once: true });
-
+  // تلاش برای استفاده از پل AppMint، اگر نسخه‌ی آن چنین متدی را ارائه کند.
+  function tryAppMintBridge(url) {
     try {
-      if (app.scheme) {
-        window.location.href = app.scheme;
-      } else {
-        // AppMint + Deep Linking باید این Intent را به Android تحویل دهد.
-        window.location.href = buildIntent(app);
-      }
-    } catch (error) {
-      console.error('Phi launch error:', error);
-    }
+      const w = window.WebToApp;
+      if (!w) return false;
 
-    // اگر اپ نصب نباشد یا Intent توسط WebView رد شود، fallback اجرا می‌شود.
-    setTimeout(() => {
-      if (!leftPhi && app.fallback) {
-        window.location.href = app.fallback;
+      const candidates = ['openUrl', 'openURL', 'openExternalUrl', 'openExternalURL', 'launchUrl', 'openLink'];
+      for (const name of candidates) {
+        if (typeof w[name] === 'function') {
+          w[name](url);
+          return true;
+        }
       }
-    }, 1600);
+    } catch (e) {
+      console.warn('AppMint bridge:', e);
+    }
+    return false;
   }
 
-  // 🚀 باز کردن اپ
+  // اجرای اپ: اول APK، سپس fallback وب فقط در صورت شکست.
+  function launchApp(app) {
+    const intent = buildAndroidIntent(app);
+    let hidden = false;
+
+    const onVisibility = () => { if (document.hidden) hidden = true; };
+    document.addEventListener('visibilitychange', onVisibility, { once: true });
+
+    // 1) AppMint bridge در صورت وجود
+    const bridgeUsed = tryAppMintBridge(intent);
+
+    // 2) Android Intent URI
+    if (!bridgeUsed) {
+      try {
+        window.location.href = intent;
+      } catch (e) {
+        console.warn('Intent launch failed:', e);
+      }
+    }
+
+    // 3) fallback — فقط اگر صفحه از Phi خارج نشده باشد.
+    if (app.fallback) {
+      setTimeout(() => {
+        document.removeEventListener('visibilitychange', onVisibility);
+        if (!hidden && !document.hidden) {
+          try { window.location.href = app.fallback; } catch (_) {}
+        }
+      }, 1800);
+    }
+  }
+
   function openApp(key) {
     const app = apps[key];
     if (!app) return;
-
     addMessage(`در حال باز کردن ${app.name}...`, 'bot');
-
-    // اجرای Intent را مستقیم انجام می‌دهیم تا WebView آن را به Android تحویل دهد.
-    launchAndroidApp(app);
-
-    setTimeout(() => {
-      addMessage(`✅ درخواست باز کردن ${app.name} ارسال شد.`, 'bot');
-    }, 500);
+    launchApp(app);
   }
 
   // ✍️ پردازش ورودی
