@@ -1,528 +1,85 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>φ فی — دستیار هوشمند</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#09090d">
+<title>فی | دستیار</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-
-  html, body {
-    height: 100%;
-    overflow: hidden;
-    background: #000;
-    color: #fff;
-  }
-
-  /* 🌌 پس‌زمینه‌ی دیجیتال */
-  body {
-    background:
-      radial-gradient(circle at 20% 30%, #1a0f2e 0%, transparent 50%),
-      radial-gradient(circle at 80% 70%, #2e1a0f 0%, transparent 50%),
-      radial-gradient(circle at 50% 50%, #0f1a2e 0%, #000 80%);
-    position: relative;
-  }
-
-  /* ✨ شبکه‌ی دیجیتال */
-  body::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255, 215, 0, 0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 215, 0, 0.06) 1px, transparent 1px);
-    background-size: 40px 40px;
-    animation: gridMove 20s linear infinite;
-    pointer-events: none;
-  }
-
-  @keyframes gridMove {
-    0%   { background-position: 0 0; }
-    100% { background-position: 40px 40px; }
-  }
-
-  /* 🎇 ذرات شناور */
-  .particles {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    overflow: hidden;
-  }
-  .particle {
-    position: absolute;
-    width: 2px; height: 2px;
-    background: #ffd700;
-    border-radius: 50%;
-    box-shadow: 0 0 6px #ffd700;
-    animation: float 8s infinite ease-in-out;
-  }
-
-  @keyframes float {
-    0%   { transform: translateY(0) scale(1); opacity: 0; }
-    50%  { opacity: 1; }
-    100% { transform: translateY(-100vh) scale(0.3); opacity: 0; }
-  }
-
-  /* 📦 کانتینر اصلی */
-  .container {
-    position: relative;
-    z-index: 10;
-    height: 100vh;
-    max-width: 500px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-  }
-
-  /* 🔮 هدر با نماد φ */
-  .header {
-    text-align: center;
-    padding: 10px 0 20px;
-  }
-
-  .phi-symbol {
-    font-size: 90px;
-    font-weight: 300;
-    background: linear-gradient(135deg, #ffd700, #ff8c00, #ffd700);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.7));
-    animation: phiGlow 3s ease-in-out infinite;
-    font-family: 'Times New Roman', serif;
-  }
-
-  @keyframes phiGlow {
-    0%, 100% { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5)); transform: scale(1); }
-    50%      { filter: drop-shadow(0 0 45px rgba(255, 215, 0, 1)); transform: scale(1.05); }
-  }
-
-  .phi-title {
-    font-size: 14px;
-    letter-spacing: 8px;
-    color: #ffd700;
-    opacity: 0.8;
-    margin-top: -10px;
-  }
-
-  .phi-subtitle {
-    font-size: 11px;
-    color: #888;
-    letter-spacing: 3px;
-    margin-top: 8px;
-  }
-
-  /* 📜 کادر پیام‌ها */
-  .messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 15px;
-    background: rgba(10, 10, 20, 0.6);
-    border: 1px solid rgba(255, 215, 0, 0.2);
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    scroll-behavior: smooth;
-  }
-
-  .messages::-webkit-scrollbar { width: 4px; }
-  .messages::-webkit-scrollbar-track { background: transparent; }
-  .messages::-webkit-scrollbar-thumb { background: #ffd700; border-radius: 10px; }
-
-  .msg {
-    padding: 10px 14px;
-    border-radius: 12px;
-    font-size: 13px;
-    line-height: 1.6;
-    max-width: 85%;
-    animation: msgIn 0.4s ease;
-    word-wrap: break-word;
-  }
-
-  @keyframes msgIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .msg.user {
-    align-self: flex-start;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 140, 0, 0.1));
-    border: 1px solid rgba(255, 215, 0, 0.4);
-    color: #ffd700;
-  }
-
-  .msg.bot {
-    align-self: flex-end;
-    background: rgba(30, 30, 50, 0.8);
-    border: 1px solid rgba(100, 200, 255, 0.3);
-    color: #a0d8ff;
-  }
-
-  /* 🎛️ نوار پایین */
-  .controls {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .input-box {
-    flex: 1;
-    padding: 14px 18px;
-    background: rgba(10, 10, 20, 0.8);
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    border-radius: 30px;
-    color: #fff;
-    font-size: 14px;
-    outline: none;
-    transition: 0.3s;
-  }
-
-  .input-box:focus {
-    border-color: #ffd700;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-  }
-
-  .input-box::placeholder { color: #666; }
-
-  /* 🎤 دکمه‌ی بزرگ ضبط صدا */
-  .mic-btn {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    border: 2px solid #ffd700;
-    background: radial-gradient(circle, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.05));
-    color: #ffd700;
-    font-size: 28px;
-    cursor: pointer;
-    transition: 0.3s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-    flex-shrink: 0;
-  }
-
-  .mic-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 35px rgba(255, 215, 0, 0.6);
-  }
-
-  .mic-btn.listening {
-    background: radial-gradient(circle, rgba(255, 0, 80, 0.5), rgba(255, 100, 0, 0.2));
-    border-color: #ff0050;
-    color: #fff;
-    animation: micPulse 1s infinite;
-    box-shadow: 0 0 40px rgba(255, 0, 80, 0.8);
-  }
-
-  @keyframes micPulse {
-    0%, 100% { transform: scale(1); }
-    50%      { transform: scale(1.15); }
-  }
-
-  /* 📱 رسپانسیو */
-  @media (max-width: 500px) {
-    .phi-symbol { font-size: 70px; }
-    .mic-btn { width: 60px; height: 60px; font-size: 24px; }
-  }
+:root{color-scheme:dark;--bg:#070a13;--fg:#f2f5ff;--muted:#929db7;--accent:#8b7cff;--cyan:#55e7f3;--line:#252e45;--panel:rgba(18,25,43,.86)}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}body{background:radial-gradient(ellipse at 50% 38%,#17213c 0%,#0b1020 36%,#070a13 75%)}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background-image:linear-gradient(#53658a20 1px,transparent 1px),linear-gradient(90deg,#53658a20 1px,transparent 1px);background-size:34px 34px;mask-image:radial-gradient(ellipse at center,#000 10%,transparent 78%)}body:after{content:"";position:fixed;width:300px;height:300px;left:50%;top:42%;transform:translate(-50%,-50%);border-radius:50%;background:#6e59ff0b;filter:blur(55px);pointer-events:none}
+button,input{font:inherit}button{cursor:pointer;touch-action:manipulation}.app{position:relative;z-index:1;height:100dvh;width:min(100%,520px);margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 22px calc(26px + env(safe-area-inset-bottom));gap:0}.brand{position:absolute;top:calc(23px + env(safe-area-inset-top));display:flex;align-items:center;gap:9px;font-size:14px;letter-spacing:2px;color:#e8eaff;font-weight:700}.brand:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 13px #55e7f3}.brand span{font-weight:450;color:#8f9bb8;letter-spacing:1px}.mic-area{display:flex;flex-direction:column;align-items:center;gap:22px;width:100%}.mic{position:relative;width:132px;height:132px;border-radius:50%;border:1px solid #6f7cae80;background:linear-gradient(145deg,#1b2745,#11172b 68%);color:#e9edff;display:grid;place-items:center;box-shadow:inset 0 1px 0 #ffffff12,0 0 0 8px #8b7cff09,0 0 0 18px #55e7f306,0 0 52px #6257ff20;transition:transform .22s,border-color .22s,box-shadow .22s}.mic:before,.mic:after{content:"";position:absolute;inset:-10px;border:1px solid #7e8dc833;border-radius:50%;pointer-events:none}.mic:after{inset:-20px;border-color:#55e7f31a}.mic svg{width:37px;height:37px;filter:drop-shadow(0 0 9px #a9a0ff44)}.mic:active{transform:scale(.96)}.mic.listening{border-color:var(--cyan);background:linear-gradient(145deg,#25385b,#191d3b);box-shadow:inset 0 1px 0 #ffffff18,0 0 0 9px #55e7f310,0 0 0 19px #8b7cff0b,0 0 65px #55e7f333;animation:pulse 1.5s ease-in-out infinite}.mic.listening:before{border-color:#55e7f35a}.mic.listening:after{border-color:#8b7cff45}@keyframes pulse{50%{box-shadow:inset 0 1px 0 #ffffff18,0 0 0 13px #55e7f30c,0 0 0 25px #8b7cff09,0 0 70px #55e7f344}}
+.status{min-height:24px;color:#a7b3cd;font-size:13px;text-align:center;line-height:1.9;letter-spacing:.1px}.heard{min-height:20px;max-width:90%;font-size:12px;color:#d0d7f0;text-align:center;overflow-wrap:anywhere}.menu{display:none;width:100%;margin-top:30px;max-height:43vh;overflow:auto}.menu.show{display:block;animation:in .22s ease}@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}.menu-title{font-size:12px;color:#8f9bb8;margin:0 0 12px;text-align:center;letter-spacing:.4px}.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.item{min-height:54px;border:1px solid #293650;border-radius:15px;background:linear-gradient(135deg,#18223a,#101727);color:#e9edff;padding:12px;font-size:13px;text-align:center;box-shadow:inset 0 1px 0 #ffffff08;transition:border-color .18s,background .18s}.item:active{border-color:#7c80e8;background:#1c2844}.back{display:block;margin:12px auto 0;border:0;background:transparent;color:#8d9ab7;padding:9px 15px;font-size:12px}.modal-wrap{position:fixed;inset:0;z-index:10;background:#03050bd9;backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:22px}.modal-wrap.show{display:flex}.modal{width:min(100%,360px);border:1px solid #35415f;border-radius:22px;background:linear-gradient(145deg,#18223a,#0e1424);padding:23px;box-shadow:0 24px 90px #0009,0 0 35px #5f64dd12}.modal h2{font-size:17px;margin:0 0 8px;letter-spacing:-.2px}.modal p{font-size:12px;color:#9ca9c5;line-height:1.9;margin:0 0 17px}.field{width:100%;height:49px;border-radius:13px;border:1px solid #35415f;background:#090e1b;color:var(--fg);padding:0 13px;outline:none;direction:ltr;text-align:left}.field:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #55e7f312}.modal-actions{display:flex;gap:9px;margin-top:15px}.action{flex:1;min-height:44px;border-radius:13px;border:1px solid #8a82ff;background:linear-gradient(135deg,#a69aff,#6e7dff);color:#090d1b;font-weight:750}.action.secondary{background:transparent;color:#c5cde2;border-color:#35415f}.tiny{display:none}
+@media(max-height:650px){.mic{width:108px;height:108px}.mic-area{gap:15px}.menu{margin-top:18px;max-height:40vh}}
 </style>
 </head>
 <body>
+<main class="app">
+  <div class="brand">φ <span>فی</span></div>
+  <section class="mic-area">
+    <button id="mic" class="mic" aria-label="شروع فرمان صوتی">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="12" y="3" width="8" height="17" rx="4"/><path d="M7 15v2a9 9 0 0 0 18 0v-2M16 26v3M12 29h8"/></svg>
+    </button>
+    <div id="status" class="status">برای فرمان دادن، میکروفون را لمس کن</div>
+    <div id="heard" class="heard"></div>
+  </section>
+  <section id="menu" class="menu" aria-live="polite">
+    <p id="menuTitle" class="menu-title">چه کاری انجام بدم؟</p>
+    <div id="menuItems" class="menu-grid"></div>
+    <button id="back" class="back">بازگشت به منوی اصلی</button>
+  </section>
 
-<!-- 🎇 ذرات -->
-<div class="particles" id="particles"></div>
-
-<div class="container">
-
-  <!-- 🔮 هدر -->
-  <div class="header">
-    <div class="phi-symbol">φ</div>
-    <div class="phi-title">P H I</div>
-    <div class="phi-subtitle">۱.۶۱۸ · نسبت طلایی</div>
-  </div>
-
-  <!-- 📜 کادر پیام‌ها -->
-  <div class="messages" id="messages">
-    <div class="msg bot">سلام 👋 من فی هستم. اسم یه برنامه رو بگو تا بازش کنم.</div>
-  </div>
-
-  <!-- 🎛️ کنترل‌ها -->
-  <div class="controls">
-    <input type="text" class="input-box" id="inputBox" placeholder="مثلاً: یوتیوب رو باز کن" />
-    <button class="mic-btn" id="micBtn">🎤</button>
-  </div>
-
+</main>
+<div id="modalWrap" class="modal-wrap" role="dialog" aria-modal="true">
+  <form id="modalForm" class="modal">
+    <h2 id="modalTitle">شماره تلفن</h2><p id="modalDesc">شماره را وارد کن.</p>
+    <input id="modalInput" class="field" autocomplete="off" inputmode="tel" placeholder="مثلاً 09123456789" required>
+    <div class="modal-actions"><button class="action" type="submit">ادامه</button><button class="action secondary" id="cancelModal" type="button">لغو</button></div>
+  </form>
 </div>
-
 <script>
-  // 🎇 ساخت ذرات
-  const particlesContainer = document.getElementById('particles');
-  for (let i = 0; i < 40; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.left = Math.random() * 100 + '%';
-    p.style.top = Math.random() * 100 + '%';
-    p.style.animationDelay = Math.random() * 8 + 's';
-    p.style.animationDuration = (5 + Math.random() * 6) + 's';
-    particlesContainer.appendChild(p);
-  }
-
-  // 🗂️ اپ‌های نصب‌شده — Phi App Launcher
-  // package باید همان Application ID / Package Name اپ اندرویدی باشد.
-  const apps = {
-    zi: {
-      name: 'Zi',
-      package: 'zi.github.io',
-      aliases: ['زی', 'zi', 'زی پلاس'] ,
-      fallback: 'https://lesehawio.github.io/zi/'
-    },
-    shifo: {
-      name: 'Shifo',
-      package: 'shifo.github.io',
-      aliases: ['شیفو', 'shifo'],
-      fallback: 'https://lesehawio.github.io/shifo/'
-    },
-    quizly: {
-      name: 'Quizly',
-      package: 'quizly.github.io',
-      aliases: ['کوییزلی', 'quizly', 'کوییز لی'],
-      fallback: 'https://lesehawio.github.io/quizly/'
-    },
-    jib: {
-      name: 'Jib',
-      package: 'jib.github.io',
-      aliases: ['جیب', 'jib'],
-      fallback: 'https://lesehawio.github.io/jib/'
-    },
-    youtube: {
-      name: 'YouTube', package: 'com.google.android.youtube',
-      aliases: ['یوتیوب', 'یوتوب', 'youtube'], fallback: 'https://www.youtube.com/'
-    },
-    instagram: {
-      name: 'Instagram', package: 'com.instagram.android',
-      aliases: ['اینستاگرام', 'اینستا', 'instagram', 'insta'], fallback: 'https://www.instagram.com/'
-    },
-    chrome: {
-      name: 'Chrome', package: 'com.android.chrome',
-      aliases: ['کروم', 'chrome', 'گوگل کروم'], fallback: 'https://www.google.com/'
-    },
-    pinterest: {
-      name: 'Pinterest', package: 'com.pinterest',
-      aliases: ['پینترست', 'pinterest'], fallback: 'https://www.pinterest.com/'
-    },
-    eitaa: {
-      name: 'Eitaa', package: 'ir.eitaa.messenger',
-      aliases: ['ایتا', 'eitaa'], fallback: 'https://eitaa.com/'
-    },
-    chatgpt: {
-      name: 'ChatGPT', package: 'com.openai.chatgpt',
-      aliases: ['چت جی پی تی', 'چت‌جی‌پی‌تی', 'chatgpt', 'chat gpt'], fallback: 'https://chatgpt.com/'
-    },
-    deepseek: {
-      name: 'DeepSeek', package: 'com.deepseek.chat',
-      aliases: ['دیپ سیک', 'دیپ‌سیک', 'deepseek'], fallback: 'https://chat.deepseek.com/'
-    },
-    gemini: {
-      name: 'Gemini', package: 'com.google.android.apps.bard',
-      aliases: ['جمینای', 'جمنای', 'gemini'], fallback: 'https://gemini.google.com/'
-    },
-    translate: {
-      name: 'Google Translate', package: 'com.google.android.apps.translate',
-      aliases: ['مترجم گوگل', 'گوگل ترنسلیت', 'ترجمه گوگل', 'translate'], fallback: 'https://translate.google.com/'
-    },
-    divar: {
-      name: 'Divar', package: 'ir.divar',
-      aliases: ['دیوار', 'divar'], fallback: 'https://divar.ir/'
-    },
-    playstore: {
-      name: 'Google Play', package: 'com.android.vending',
-      aliases: ['اپ استور', 'پلی استور', 'گوگل پلی', 'play store', 'google play'], fallback: 'https://play.google.com/store'
-    },
-    contacts: {
-      name: 'Contacts', package: 'com.google.android.contacts',
-      aliases: ['مخاطبین', 'مخاطب', 'contacts', 'کانتکت'], fallback: 'content://contacts/'
-    },
-    olvid: {
-      name: 'Olvid', package: 'io.olvid.messenger',
-      aliases: ['اولوید', 'olvid'], fallback: 'https://olvid.io/'
-    },
-    camera: {
-      name: 'Camera', action: 'android.media.action.IMAGE_CAPTURE',
-      aliases: ['دوربین', 'camera'], fallback: 'camera:'
-    },
-    gallery: {
-      name: 'Gallery', action: 'android.intent.action.VIEW', type: 'image/*',
-      aliases: ['گالری', 'gallery', 'عکس‌ها', 'تصاویر'], fallback: 'content://media/external/images/media'
-    },
-    phone: {
-      name: 'Phone', scheme: 'tel:',
-      aliases: ['تلفن', 'تماس', 'شماره گیر', 'شماره‌گیر', 'phone'], fallback: 'tel:'
-    },
-    messages: {
-      name: 'Messages', scheme: 'sms:',
-      aliases: ['پیام ها', 'پیام‌ها', 'پیام رسان', 'پیام‌رسان', 'پیام', 'messages', 'sms'], fallback: 'sms:'
-    }
-  };
-
-  const messagesBox = document.getElementById('messages');
-  const inputBox = document.getElementById('inputBox');
-  const micBtn = document.getElementById('micBtn');
-
-  function addMessage(text, sender) {
-    const div = document.createElement('div');
-    div.className = 'msg ' + sender;
-    div.textContent = text;
-    messagesBox.appendChild(div);
-    messagesBox.scrollTop = messagesBox.scrollHeight;
-  }
-
-  function normalizeFa(text) {
-    return text.toLowerCase()
-      .replace(/[يى]/g, 'ی')
-      .replace(/ك/g, 'ک')
-      .replace(/[‌]/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-
-  function findApp(text) {
-    const lower = normalizeFa(text);
-    for (const key in apps) {
-      if (apps[key].aliases.some(alias => lower.includes(normalizeFa(alias)))) return key;
-    }
-    return null;
-  }
-
-  // ساخت Intent اندروید برای اجرای مستقیم APK نصب‌شده
-  function buildAndroidIntent(app) {
-    let intent = 'intent://#Intent;';
-
-    if (app.action) {
-      intent += 'action=' + app.action + ';';
-    } else {
-      intent += 'action=android.intent.action.MAIN;';
-      intent += 'category=android.intent.category.LAUNCHER;';
-    }
-
-    if (app.package) intent += 'package=' + app.package + ';';
-    if (app.type) intent += 'type=' + encodeURIComponent(app.type) + ';';
-    intent += 'end';
-    return intent;
-  }
-
-  // تلاش برای استفاده از پل AppMint، اگر نسخه‌ی آن چنین متدی را ارائه کند.
-  function tryAppMintBridge(url) {
-    try {
-      const w = window.WebToApp;
-      if (!w) return false;
-
-      const candidates = ['openUrl', 'openURL', 'openExternalUrl', 'openExternalURL', 'launchUrl', 'openLink'];
-      for (const name of candidates) {
-        if (typeof w[name] === 'function') {
-          w[name](url);
-          return true;
-        }
-      }
-    } catch (e) {
-      console.warn('AppMint bridge:', e);
-    }
-    return false;
-  }
-
-  // اجرای اپ: اول APK، سپس fallback وب فقط در صورت شکست.
-  function launchApp(app) {
-    const intent = buildAndroidIntent(app);
-    let hidden = false;
-
-    const onVisibility = () => { if (document.hidden) hidden = true; };
-    document.addEventListener('visibilitychange', onVisibility, { once: true });
-
-    // 1) AppMint bridge در صورت وجود
-    const bridgeUsed = tryAppMintBridge(intent);
-
-    // 2) Android Intent URI
-    if (!bridgeUsed) {
-      try {
-        window.location.href = intent;
-      } catch (e) {
-        console.warn('Intent launch failed:', e);
-      }
-    }
-
-    // 3) fallback — فقط اگر صفحه از Phi خارج نشده باشد.
-    if (app.fallback) {
-      setTimeout(() => {
-        document.removeEventListener('visibilitychange', onVisibility);
-        if (!hidden && !document.hidden) {
-          try { window.location.href = app.fallback; } catch (_) {}
-        }
-      }, 1800);
-    }
-  }
-
-  function openApp(key) {
-    const app = apps[key];
-    if (!app) return;
-    addMessage(`در حال باز کردن ${app.name}...`, 'bot');
-    launchApp(app);
-  }
-
-  // ✍️ پردازش ورودی
-  function handleInput(text) {
-    if (!text.trim()) return;
-    addMessage(text, 'user');
-    const key = findApp(text);
-    if (key) {
-      openApp(key);
-    } else {
-      addMessage('متوجه نشدم. مثلاً بگو: «یوتیوب رو باز کن».', 'bot');
-    }
-    inputBox.value = '';
-  }
-
-  // ⏎ اینتر
-  inputBox.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') handleInput(inputBox.value);
-  });
-
-  // 🎤 ضبط صدا
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (SpeechRecognition) {
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'fa-IR';
-    recognition.continuous = false;
-
-    micBtn.onclick = () => {
-      recognition.start();
-      micBtn.classList.add('listening');
-      micBtn.textContent = '⏺';
-      addMessage('🎤 در حال گوش دادن...', 'bot');
-    };
-
-    recognition.onresult = (e) => {
-      micBtn.classList.remove('listening');
-      micBtn.textContent = '🎤';
-      handleInput(e.results[0][0].transcript);
-    };
-
-    recognition.onerror = () => {
-      micBtn.classList.remove('listening');
-      micBtn.textContent = '🎤';
-      addMessage('نتونستم صدا رو بشنوم. دوباره امتحان کن.', 'bot');
-    };
-
-    recognition.onend = () => {
-      micBtn.classList.remove('listening');
-      micBtn.textContent = '🎤';
-    };
-  } else {
-    micBtn.onclick = () => addMessage('مرورگر تو از تشخیص صدا پشتیبانی نمی‌کنه.', 'bot');
-  }
+(()=>{
+const $=id=>document.getElementById(id), mic=$('mic'), status=$('status'), heard=$('heard'), menu=$('menu'), menuTitle=$('menuTitle'), menuItems=$('menuItems'), modalWrap=$('modalWrap'), modalForm=$('modalForm'), modalInput=$('modalInput');
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,listening=false,mode='main',pendingAction='',lastCommand='',lastMenu='main';
+const normalize=s=>(s||'').toLocaleLowerCase('fa-IR').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/‌/g,' ').replace(/[؟?!،,.؛:]/g,' ').replace(/\s+/g,' ').trim();
+function say(text,thenListen=false){status.textContent=text;if(!('speechSynthesis'in window)){if(thenListen)listen();return}try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(text);u.lang='fa-IR';u.rate=.94;u.onend=()=>{if(thenListen)listen()};speechSynthesis.speak(u)}catch(e){if(thenListen)listen()}}
+function showMenu(title,items,kind){lastMenu=kind;mode=kind;menuTitle.textContent=title;menuItems.innerHTML='';items.forEach(item=>{let b=document.createElement('button');b.className='item';b.textContent=item.label;b.onclick=()=>runAction(item.action);menuItems.appendChild(b)});menu.classList.add('show')}
+function hideMenu(){menu.classList.remove('show')}
+function askInput(title,desc,placeholder,action,inputmode='tel'){pendingAction=action;$('modalTitle').textContent=title;$('modalDesc').textContent=desc;modalInput.placeholder=placeholder;modalInput.value='';modalInput.inputMode=inputmode;modalWrap.classList.add('show');setTimeout(()=>modalInput.focus(),80)}
+function closeModal(){modalWrap.classList.remove('show')}
+function cleanNumber(s){return (s||'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[^\d+*#]/g,'')}
+function dial(number){let n=cleanNumber(number);if(!n){say('شماره معتبر نیست.');return}say('شماره‌گیر را با شماره واردشده باز می‌کنم. برای برقراری تماس، دکمه تماس گوشی را بزن.');setTimeout(()=>{location.href='tel:'+encodeURIComponent(n)},250)}
+function sms(number){let n=cleanNumber(number);if(!n){say('شماره معتبر نیست.');return}say('صفحه پیام جدید را برای این شماره باز می‌کنم. متن پیام را آنجا بنویس و خودت ارسال کن.');setTimeout(()=>{location.href='sms:'+encodeURIComponent(n)},250)}
+function openContacts(){say('دارم برنامه مخاطبین را باز می‌کنم.');try{location.href='intent://contacts/#Intent;action=android.intent.action.VIEW;end'}catch(e){say('بازکردن مخاطبین به پشتیبانی اندروید در Mine App بستگی دارد.')}}
+function runAction(action){hideMenu();switch(action){case 'call-number':askInput('تماس با شماره','شماره‌ای را که می‌خواهی با آن تماس بگیری وارد کن.','09123456789','dial');break;case 'call-contact':openContacts();say('فهرست مخاطبین را باز کردم؛ مخاطب را از آنجا انتخاب کن. انتخاب مستقیم و تماس خودکار به اتصال اندرویدی نیاز دارد.');break;case 'contacts':openContacts();break;case 'sms-number':askInput('پیامک به شماره','شماره گیرنده را وارد کن. سپس برنامه پیام‌ها باز می‌شود.','09123456789','sms');break;case 'sms-contact':openContacts();say('فهرست مخاطبین را باز کردم؛ برای پیامک مستقیم به مخاطب، باید اتصال اندرویدی اضافه شود.');break;case 'messages':try{location.href='sms:';say('دارم برنامه پیام‌ها را باز می‌کنم.')}catch(e){say('بازکردن پیام‌ها به پشتیبانی اندروید بستگی دارد.')}break;case 'main':showMain();break}}
+function showMain(){showMenu('چه کاری انجام بدم؟',[{label:'تماس',action:'call-menu'},{label:'پیامک',action:'sms-menu'}],'main')}
+function showCallMenu(){showMenu('بخش تماس',[{label:'تماس با شماره',action:'call-number'},{label:'تماس با مخاطب',action:'call-contact'},{label:'بازکردن مخاطبین',action:'contacts'}],'call')}
+function showSmsMenu(){showMenu('بخش پیامک',[{label:'پیامک به شماره',action:'sms-number'},{label:'پیامک به مخاطب',action:'sms-contact'},{label:'بازکردن پیام‌ها',action:'messages'}],'sms')}
+function processInput(value){let v=(value||'').trim();if(!v)return;lastCommand=v;heard.textContent='«'+v+'»';let c=normalize(v);
+ if(c.includes('لغو')||c==='بیخیال'||c==='بی خیال'){closeModal();hideMenu();say('باشه، لغو شد.');return}
+ if(/^(سلام|درود)/.test(c)){say('سلام، من فی‌ام. بگو تماس یا پیامک؛ یا بگو چه کاری می‌خوای انجام بدم.',true);return}
+ if(c.includes('منو')||c.includes('چه کار')||c==='شروع'){showMain();say('منوی اصلی رو باز کردم.');return}
+ if(c.includes('پیام')||c.includes('اس ام اس')||c.includes('sms')){showSmsMenu();say('بخش پیامک رو باز کردم.');return}
+ if(c.includes('تماس')||c.includes('زنگ')||c.includes('شماره گیر')||c.includes('شماره‌گیر')){showCallMenu();say('بخش تماس رو باز کردم.');return}
+ if(c.includes('مخاطب')||c.includes('دفترچه تلفن')){openContacts();return}
+ say('متوجه شدم. برای انتخاب دقیق‌تر، بگو «تماس» یا «پیامک».',true)
+}
+menuItems.addEventListener('click',e=>{let b=e.target.closest('button');if(!b)return;let a=b.dataset.action;if(a==='call-menu'){showCallMenu();return}if(a==='sms-menu'){showSmsMenu();return}});
+// Route menu actions through delegated handler so every menu item works.
+const originalShowMenu=showMenu;
+function showMenu(title,items,kind){lastMenu=kind;mode=kind;menuTitle.textContent=title;menuItems.innerHTML='';items.forEach(item=>{let b=document.createElement('button');b.className='item';b.textContent=item.label;b.dataset.action=item.action;b.onclick=()=>{if(item.action==='call-menu'){showCallMenu()}else if(item.action==='sms-menu'){showSmsMenu()}else runAction(item.action)};menuItems.appendChild(b)});menu.classList.add('show')}
+// Rebind the main menu functions to the delegated version.
+function showMainFixed(){showMenu('چه کاری انجام بدم؟',[{label:'تماس',action:'call-menu'},{label:'پیامک',action:'sms-menu'}],'main')}
+function showCallMenuFixed(){showMenu('بخش تماس',[{label:'تماس با شماره',action:'call-number'},{label:'تماس با مخاطب',action:'call-contact'},{label:'بازکردن مخاطبین',action:'contacts'}],'call')}
+function showSmsMenuFixed(){showMenu('بخش پیامک',[{label:'پیامک به شماره',action:'sms-number'},{label:'پیامک به مخاطب',action:'sms-contact'},{label:'بازکردن پیام‌ها',action:'messages'}],'sms')}
+// Use fixed versions for every interaction.
+showMain=showMainFixed;showCallMenu=showCallMenuFixed;showSmsMenu=showSmsMenuFixed;
+modalForm.addEventListener('submit',e=>{e.preventDefault();let value=modalInput.value.trim();if(!value)return;let action=pendingAction;closeModal();if(action==='dial')dial(value);else if(action==='sms')sms(value);else if(action==='contacts'){say('برای انتخاب مخاطب، فهرست مخاطبین را باز می‌کنم.');openContacts()}});
+$('cancelModal').addEventListener('click',()=>{closeModal();say('باشه، لغو شد.')});$('back').addEventListener('click',()=>{showMainFixed();say('به منوی اصلی برگشتیم.')});
+async function listen(){if(listening)return;if(!SR){say('تشخیص گفتار در این محیط پشتیبانی نمی‌شود. اگر داخل APK هستی، Mine App باید دسترسی میکروفون و WebView را پشتیبانی کند.');return}try{if(!window.isSecureContext&&location.protocol!=='file:'){say('برای میکروفون، صفحه باید در یک محیط امن HTTPS اجرا شود.');return}if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){status.textContent='در حال بررسی دسترسی میکروفون…';const stream=await navigator.mediaDevices.getUserMedia({audio:true});stream.getTracks().forEach(t=>t.stop())}rec=new SR();rec.lang='fa-IR';rec.continuous=false;rec.interimResults=false;rec.maxAlternatives=1;rec.onstart=()=>{listening=true;mic.classList.add('listening');status.textContent='گوش می‌دم…'};rec.onresult=e=>{const t=e.results[0][0].transcript;processInput(t)};rec.onerror=e=>{listening=false;mic.classList.remove('listening');if(e.error==='not-allowed'||e.error==='service-not-allowed'){status.textContent='دسترسی میکروفون مسدود است؛ مجوز سایت یا APK را بررسی کن.'}else if(e.error==='audio-capture'){status.textContent='میکروفون در دسترس نیست؛ مجوز و اتصال میکروفون را بررسی کن.'}else if(e.error==='network'){status.textContent='سرویس تشخیص گفتار به شبکه نیاز دارد یا در دسترس نیست.'}else{status.textContent='صدا تشخیص داده نشد؛ دوباره میکروفون را لمس کن.'}};rec.onend=()=>{listening=false;mic.classList.remove('listening')};rec.start()}catch(e){mic.classList.remove('listening');listening=false;if(e&&e.name==='NotAllowedError'){status.textContent='مجوز میکروفون رد شده؛ از تنظیمات سایت یا برنامه اجازه بده.'}else if(e&&e.name==='NotFoundError'){status.textContent='میکروفونی پیدا نشد.'}else{status.textContent='میکروفون در این محیط فعال نشد؛ اگر APK است، تنظیمات Mine App لازم است.'}}}
+mic.addEventListener('click',()=>{if(listening){try{rec.stop()}catch(e){}return}listen()});
+// Native intents are best-effort; the host WebView must permit them.
+})();
 </script>
-
 </body>
 </html>
